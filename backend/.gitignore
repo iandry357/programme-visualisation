@@ -1,0 +1,21 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Data & SQL
+data/
+init-data.sql
+*.sql.bak
+
+# Docker volumes
+mariadb_data/
+
+# Logs
+*.log
