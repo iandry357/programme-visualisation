@@ -21,6 +21,7 @@ class Settings(BaseSettings):
         origins = [
             "http://localhost:3000",  # Next.js dev local
             "http://localhost:5173",  # Vite alternative
+            "https://frontend-programme-visualisation-production.up.railway.app"
         ]
         if self.FRONTEND_URL:
             origins.append(self.FRONTEND_URL)
