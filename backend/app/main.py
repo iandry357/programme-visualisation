@@ -5,6 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.api.routes import concerts
 
+from app.database import engine, Base
+from app import models
+
 # Création de l'app FastAPI
 app = FastAPI(
     title=settings.API_TITLE,
@@ -41,3 +44,9 @@ def health():
         "status": "healthy",
         "database": "connected"  # Phase 3: vérifier vraiment la connexion
     }
+
+
+@app.on_event("startup")
+def startup():
+    """Crée toutes les tables au démarrage."""
+    Base.metadata.create_all(bind=engine)

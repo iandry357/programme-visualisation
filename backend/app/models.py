@@ -5,6 +5,7 @@ from sqlalchemy import (
     LargeBinary, DateTime, ForeignKey, Index
 )
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.mysql import LONGBLOB
 
 from app.database import Base
 
@@ -20,7 +21,7 @@ class Concert(Base):
     is_published = Column(Boolean, default=True)
     
     # PDF complet
-    pdf_full = Column(LargeBinary, nullable=False)
+    pdf_full = Column(LONGBLOB, nullable=False)
     pdf_filename = Column(String(255), nullable=False)
     pdf_size = Column(Integer, nullable=False)
     
@@ -41,7 +42,7 @@ class ProgramPage(Base):
     page_number = Column(Integer, nullable=False)
     
     # PNG data
-    png_data = Column(LargeBinary, nullable=False)
+    png_data = Column(LONGBLOB, nullable=False)
     png_size = Column(Integer, nullable=False)
     width = Column(Integer, nullable=True)
     height = Column(Integer, nullable=True)
