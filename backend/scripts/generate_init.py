@@ -60,7 +60,8 @@ def generate_sql():
         f.write("-- Auto-généré par generate_init.py\n")
         f.write("-- Ne pas éditer manuellement\n\n")
         
-        f.write("USE concerts_db;\n\n")
+        # f.write("USE concerts_db;\n\n")
+        f.write("-- Base de données sélectionnée via paramètres de connexion\n\n")
         
         # INSERT concert
         # INSERT concert
