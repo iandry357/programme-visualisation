@@ -16,41 +16,99 @@ export default function ConcertPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isRetrying, setIsRetrying] = useState(false);
+
+  const fetchConcert = async (retryCount = 0) => {
+    setError(null);
+    setIsRetrying(retryCount > 0);
+    setLoading(true);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+
+    try {
+      const data = await getConcert(concertId, controller.signal);
+      setConcert(data);
+      setError(null);
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        setError('Le chargement prend trop de temps');
+      } else if (err.message === 'Failed to fetch' || err.message?.includes('fetch')) {
+        setError('Impossible de contacter le serveur');
+      } else if (err.message?.includes('404') || err.message?.includes('not found')) {
+        setError('Concert non trouvé');
+      } else {
+        setError('Une erreur est survenue lors du chargement');
+      }
+      console.error(err);
+    } finally {
+      clearTimeout(timeoutId);
+      setLoading(false);
+      setIsRetrying(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchConcert() {
-      try {
-        setLoading(true);
-        const data = await getConcert(concertId);
-        setConcert(data);
-        setError(null);
-      } catch (err) {
-        setError("Impossible de charger le concert");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchConcert();
   }, [concertId]);
 
-  if (loading) {
+  const handleRetry = () => {
+    fetchConcert(1);
+  };
+
+  const handleImageError = () => {
+    setError('Erreur lors du chargement de l\'image');
+  };
+
+  // Affichage erreur
+  if (error && !loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement...</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="mb-6">
+            <svg 
+              className="w-16 h-16 mx-auto text-red-500" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-semibold text-white mb-4">{error}</h2>
+          <button
+            onClick={handleRetry}
+            disabled={isRetrying}
+            className="bg-white text-black px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isRetrying ? 'Chargement...' : 'Réessayer'}
+          </button>
         </div>
       </div>
     );
   }
 
-  if (error || !concert) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 text-lg">{error || "Concert introuvable"}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-gray-300">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!concert) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center px-4">
+        <div className="text-center">
+          <p className="text-red-400 text-lg">Concert introuvable</p>
         </div>
       </div>
     );
@@ -70,6 +128,7 @@ export default function ConcertPage() {
           pages={concert.pages}
           currentPage={currentPage}
           onPageChange={setCurrentPage}
+          onImageError={handleImageError}
         />
         
         {/* <ImageGallery

@@ -10,6 +10,7 @@ interface ImageViewerProps {
   pages: PageMetadata[];
   currentPage: number;
   onPageChange: (page: number) => void;
+  onImageError: () => void;
 }
 
 export default function ImageViewer({
@@ -17,6 +18,7 @@ export default function ImageViewer({
   pages,
   currentPage,
   onPageChange,
+  onImageError,
 }: ImageViewerProps) {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
@@ -98,6 +100,7 @@ export default function ImageViewer({
             src={getPagePngUrl(concertId, currentPage)}
             alt={`Page ${currentPage}`}
             className="w-full h-full object-contain"
+            onError={onImageError}
           />
         </div>
 
