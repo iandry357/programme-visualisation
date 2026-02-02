@@ -1,3 +1,6 @@
+import pymysql
+pymysql.install_as_MySQLdb()
+
 """Connexion et session SQLAlchemy."""
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
