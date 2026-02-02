@@ -1,3 +1,7 @@
+"""Configuration de l'application."""
+from pydantic_settings import BaseSettings
+
+
 class Settings(BaseSettings):
     """Configuration de l'application avec validation Pydantic."""
     
@@ -25,3 +29,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+
+
+# Instance globale
+settings = Settings()
