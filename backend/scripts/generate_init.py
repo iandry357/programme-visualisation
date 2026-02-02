@@ -63,9 +63,10 @@ def generate_sql():
         f.write("USE concerts_db;\n\n")
         
         # INSERT concert
+        # INSERT concert
         f.write("-- Insertion du concert\n")
         f.write("INSERT INTO concerts ")
-        f.write("(title, concert_date, location, is_published, pdf_full, pdf_filename, pdf_size) ")
+        f.write("(title, concert_date, location, is_published, pdf_full, pdf_filename, pdf_size, created_at, updated_at) ")
         f.write("VALUES (\n")
         f.write(f"  '{CONCERT_TITLE}',\n")
         f.write(f"  '{CONCERT_DATE}',\n")
@@ -73,7 +74,9 @@ def generate_sql():
         f.write(f"  TRUE,\n")
         f.write(f"  {pdf_hex},\n")
         f.write(f"  '{PDF_PATH.name}',\n")
-        f.write(f"  {pdf_size}\n")
+        f.write(f"  {pdf_size},\n")
+        f.write(f"  NOW(),\n")
+        f.write(f"  NOW()\n")
         f.write(");\n\n")
         
         # Récupérer l'ID du concert inséré
