@@ -1,0 +1,2 @@
+cd backend
+docker exec -it concert_backend python scripts/upload_to_db.py --host mysql.railway.internal --port 3306 --user root --password wlkhsvFrFjvzKFFlAWFTTREmldvNSAYE --database railway
